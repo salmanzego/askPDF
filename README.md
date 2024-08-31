@@ -1,6 +1,4 @@
-# AskPdf PDF-Based Chatbot Project
-
-# PDF-Based Chatbot Project
+# AskPdf - PDF-Based Chatbot Project
 
 ## Project Overview
 This project focuses on building a chatbot capable of answering questions based on the content of a provided PDF file. It involves integrating both Node.js and Python backends to handle different tasks effectively.
