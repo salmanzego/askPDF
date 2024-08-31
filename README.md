@@ -38,6 +38,11 @@ This project focuses on building a chatbot capable of answering questions based 
 - Gained understanding of how Retrieval-Augmented Generation (RAG) chatbots work.
 - Practical experience with AI model implementation.
 - Improved knowledge of tools like Huggingface, Pinecone, and Langchain.
+
 - Learned to bridge the gap between Python and Node.js environments.
 - Acquired skills in building and integrating Python backend services for AI-related tasks.
+
+## Screenshots
+![Screenshot 2024-09-01 043244](https://github.com/user-attachments/assets/53489a67-ab81-4f46-b741-461df60618d0)
+![Screenshot 2024-09-01 043758](https://github.com/user-attachments/assets/1456f891-8c3c-4a5b-8f22-994cac6c8d30)
 
