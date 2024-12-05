@@ -5,7 +5,7 @@ const { response } = require('../app');
 
 /* GET home page. */
 router.get('/extract', (req, res, next) => {
-  storeHelper.extractPdf("public/dbms_note.pdf").then(text => {
+  storeHelper.extractPdf("public/instr_m1.pdf").then(text => {
     storeHelper.textSplit(text).then((splits) => {
       storeHelper.embedSplits(splits).then(embeddings => {
         const data = embeddings.embeddings;

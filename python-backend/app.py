@@ -42,8 +42,8 @@ def get_prompt():
         data = request.json
         user_prompt = data['prompt']
 
-        groq_api_key = os.getenv("GROQ_API_KEY")
-    
+        groq_api_key = "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"
+        
         model = 'llama3-8b-8192'
         groq_chat = ChatGroq(
             groq_api_key=groq_api_key, 
