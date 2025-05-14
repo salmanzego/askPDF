@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nodemon ./bin/www",
-    "start": "node ./bin/www",
+    "start": "node ./bin/www"
   },
   "dependencies": {
     "@huggingface/inference": "^2.8.0",
