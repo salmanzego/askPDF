@@ -11,7 +11,7 @@ const get = async (
 ) => {
     try {
         const resp = await axios.get(path, {
-            headers: { "Content-Type": "application/json", },
+            headers: headers || { "Content-Type": "application/json"},
         });
         return successRes(resp.data);
     } catch (error) {
@@ -26,7 +26,7 @@ const post = async (
 ) => {
     try {
         const resp = await axios.post(path, body, {
-            headers: { "Content-Type": "application/json"},
+            headers: headers || { "Content-Type": "application/json" },
         });
         return successRes(resp.data);
     } catch (error) {

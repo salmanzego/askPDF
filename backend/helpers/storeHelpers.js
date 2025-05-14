@@ -4,19 +4,43 @@ const textSplitters = require("@langchain/textsplitters");
 const { response } = require('../app');
 const RecursiveCharacterTextSplitter = textSplitters.RecursiveCharacterTextSplitter;
 const TransformersApi = Function('return import("@xenova/transformers")')();
-const pinecone = require("../config/database_config");
+const pinecone = require("../config/pinecone");
 const pc = pinecone.pc;
 const langchain_prompts = require("@langchain/core/prompts");
 const PromptTemplate = langchain_prompts.PromptTemplate;
 const hfinference = require("@huggingface/inference");
 const HfInference = hfinference.HfInference;
+const FilesModel = require("../models/files.model");
 module.exports = {
+  storePdfData: (filename) => {
+    return new Promise(async (resolve, reject) => {
+      FilesModel.create({ filename: filename })
+        .then((data) => {
+          resolve({ msg: "File data stored in db", data: data });
+        })
+        .catch((err) => {
+          reject({ msg: "Error in storing pdf data in db", err: err });
+        });
+    })
+  },
+  getPdfList: () => {
+    return new Promise(async (resolve, reject) => {
+      FilesModel.find({})
+        .then((data) => {
+          resolve(data);
+        })
+        .catch((err) => {
+          reject({ msg: "Error in getting pdf data from db", err: err });
+        });
+    })
+  },
   extractPdf: (pdf) => {
     return new Promise(async (resolve, reject) => {
-      const dataBuffer = fs.readFileSync(pdf);
-      const pdfData = await pdfParse(dataBuffer);
+      const pdfData = await pdfParse(pdf);
       if (pdfData) {
         resolve(pdfData.text);
+      } else {
+        reject({ error: "Error extracting pdf" });
       }
     })
   },
@@ -123,7 +147,7 @@ module.exports = {
   getResult: (prompt) => {
     return new Promise(async (resolve, reject) => {
       const endpoint = "http://localhost:5000/generate";
-      
+
       try {
         const response = await fetch(endpoint,
           {
@@ -131,7 +155,7 @@ module.exports = {
               "Content-Type": "application/json",
             },
             method: "POST",
-            body: JSON.stringify({prompt: prompt}) ,
+            body: JSON.stringify({ prompt: prompt }),
           }
         );
 

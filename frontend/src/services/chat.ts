@@ -14,9 +14,13 @@ const handleApiResponse = (response: any) => {
     }
 };
 
-export const getMessage = async (message: string) => {
+export const getMessage = async (message: string, fileName: string) => {
     try {
-        const getMessage = await API.post(`/query?q=${message}`);
+        const body = {
+            message: message,
+            fileName: fileName,
+        }
+        const getMessage = await API.post(`/query`, body, { "Content-Type": "application/json" });
         return handleApiResponse(getMessage);
     } catch (error) {
         return handleApiResponse({ error });

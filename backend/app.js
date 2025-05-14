@@ -3,14 +3,17 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var dotenv = require('dotenv')
+
 var indexRouter = require('./routes/index');
 
 var app = express();
 dotenv.config();
 
-const db = require("./config/database_config");
-const connect = db.connect;
-connect();
+const connectDB = require("./config/db");
+connectDB();
+
+const connectPine = require("./config/pinecone");
+connectPine();
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -24,6 +27,7 @@ app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
+
 
 app.use('/', indexRouter);
 

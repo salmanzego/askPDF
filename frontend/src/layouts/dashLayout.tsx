@@ -1,6 +1,6 @@
 const DashLayout = ({children}:any) =>{
     return(
-        <div className="mx-32 my-8">
+        <div className="">
             {children}
         </div>
     )

@@ -1,4 +1,5 @@
 import { IoSend } from 'react-icons/io5';
+import { FiPaperclip } from 'react-icons/fi'
 
 interface Params {
     handleSend: Function,
@@ -8,6 +9,7 @@ interface Params {
 }
 
 const InputField = ({ handleSend, input, setInput, loading }: Params) => {
+
     return (
         <div className="p-4 border-t border-gray-300">
             <form
@@ -15,7 +17,7 @@ const InputField = ({ handleSend, input, setInput, loading }: Params) => {
                     e.preventDefault()
                     handleSend()
                 }}
-                className="flex space-x-2"
+                className="flex space-x-3 items-center"
             >
                 <input
                     type="text"
