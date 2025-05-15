@@ -58,7 +58,7 @@ module.exports = {
   },
   getEmbed: (chunks) => {
     return new Promise(async (resolve, reject) => {
-      const endpoint = "http://localhost:5000/embed";
+      const endpoint = `${process.env.FLASK_BACKEND_URL || "http://localhost:5000"}/embed`;
 
       const response = await fetch(endpoint,
         {

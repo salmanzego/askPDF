@@ -1,6 +1,6 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:3002";
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3002";
 
 const successRes = (data: any) => ({ data, error: null });
 const errorRes = (error: any) => ({ data: null, error });
