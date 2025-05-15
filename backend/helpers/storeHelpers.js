@@ -5,7 +5,6 @@ const { response } = require('../app');
 const RecursiveCharacterTextSplitter = textSplitters.RecursiveCharacterTextSplitter;
 const TransformersApi = Function('return import("@xenova/transformers")')();
 const pinecone = require("../config/pinecone");
-const pc = pinecone.pc;
 const langchain_prompts = require("@langchain/core/prompts");
 const PromptTemplate = langchain_prompts.PromptTemplate;
 const hfinference = require("@huggingface/inference");
@@ -58,20 +57,22 @@ module.exports = {
   },
   getEmbed: (chunks) => {
     return new Promise(async (resolve, reject) => {
-      const endpoint = `${process.env.FLASK_BACKEND_URL || "http://localhost:5000"}/embed`;
-
+      const endpoint = `https://router.huggingface.co/hf-inference/models/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/pipeline/feature-extraction`;
       const response = await fetch(endpoint,
         {
           headers: {
+            "Authorization": `Bearer ${process.env.HF_KEY}`,
             "Content-Type": "application/json",
           },
           method: "POST",
-          body: JSON.stringify(chunks),
+          body: JSON.stringify({inputs: chunks}),
         }
       );
       if (response.ok) {
         const data = await response.json();
         resolve(data);
+      }else{
+        reject({ error: "Error in getting embeddings" });
       }
     })
   },
@@ -82,6 +83,7 @@ module.exports = {
     })
   },
   storeData: (data, chunks, name) => {
+    const pc = pinecone.getPineconeClient();
     return new Promise(async (resolve, reject) => {
       const index = pc.index("askpdf-index");
       const vectors = data.map((embedding, ind) => ({
@@ -99,6 +101,7 @@ module.exports = {
     })
   },
   queryData: (query, name) => {
+    const pc = pinecone.getPineconeClient();
     return new Promise(async (resolve, reject) => {
       const index = pc.index("askpdf-index");
       try {
@@ -146,7 +149,7 @@ module.exports = {
   },
   getResult: (prompt) => {
     return new Promise(async (resolve, reject) => {
-      const endpoint = "http://localhost:5000/generate";
+      const endpoint = `${process.env.FLASK_BACKEND_URL || "http://localhost:5000"}/generate`;
 
       try {
         const response = await fetch(endpoint,

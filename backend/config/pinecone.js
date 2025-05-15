@@ -4,10 +4,12 @@ const Pinecone = pinecone.Pinecone;
 
 const indexName = "askpdf-index";
 
+let pc;
+
 const connect = async () => {
-  const pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
+  pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
   const indexList = await pc.listIndexes();
-  
+
   if (!indexList.indexes.find(index => index.name === indexName)) {
     await pc.createIndex({
       name: indexName,
@@ -25,5 +27,9 @@ const connect = async () => {
   }
 }
 
+const getPineconeClient = () => {
+  if (!pc) throw new Error("Pinecone client not initialized. Call connect() first.");
+  return pc;
+};
 
-module.exports = connect;
+module.exports = { getPineconeClient, connect };

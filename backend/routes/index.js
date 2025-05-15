@@ -42,7 +42,7 @@ router.post('/upload', upload.single('file'), (req, res, next) => {
     storeHelper.extractPdf(fileBuffer).then(text => {
       storeHelper.textSplit(text).then((splits) => {
         storeHelper.embedSplits(splits).then(embeddings => {
-          const data = embeddings.embeddings;
+          const data = embeddings;
           storeHelper.storeData(data, splits, fileName).then(response => {
             storeHelper.storePdfData(fileName).then(pdfResponse => {
               res.status(200).json({ message: pdfResponse.msg, response });
@@ -52,6 +52,8 @@ router.post('/upload', upload.single('file'), (req, res, next) => {
           }).catch(err => {
             res.status(500).json({ error: err });
           })
+        }).catch(err => {
+          res.status(500).json({ error: err });
         })
       })
     })
@@ -65,7 +67,7 @@ router.post('/query', (req, res, next) => {
   const fileName = req.body.fileName;
   storeHelper.textSplit(query).then(splits => {
     storeHelper.embedSplits(splits).then(embeddings => {
-      const data = embeddings.embeddings;
+      const data = embeddings;
       storeHelper.queryData(data, fileName).then(queryResponse => {
         storeHelper.generatePrompt(queryResponse.matches, query).then(prompt => {
           storeHelper.getResult(prompt).then(result => {
