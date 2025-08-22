@@ -28,6 +28,7 @@ router.get('/pdfs', (req, res, next) => {
   storeHelper.getPdfList().then(data => {
     res.status(200).json({data: data, msg: "PDFs fetched successfully"});
   }).catch(err => {
+    console.log('[ERROR_PDF_LIST] Failed to fetch PDF list:', err);
     res.status(500).json({ error: err });
   })
 });
@@ -47,17 +48,24 @@ router.post('/upload', upload.single('file'), (req, res, next) => {
             storeHelper.storePdfData(fileName).then(pdfResponse => {
               res.status(200).json({ message: pdfResponse.msg, response });
             }).catch(err => {
+              console.log('[ERROR_STORE_PDF_DATA] Failed to store PDF data for file:', fileName, 'Error:', err);
               res.status(500).json({ error: err });
             })
           }).catch(err => {
+            console.log('[ERROR_STORE_DATA] Failed to store data for file:', fileName, 'Error:', err);
             res.status(500).json({ error: err });
           })
         }).catch(err => {
+          console.log('[ERROR_EMBED_SPLITS] Failed to embed splits for file:', fileName, 'Error:', err);
           res.status(500).json({ error: err });
         })
+      }).catch(err => {
+        console.log('[ERROR_TEXT_SPLIT] Failed to split text for file:', fileName, 'Error:', err);
+        res.status(500).json({ error: err });
       })
     })
   } catch (err) {
+    console.log('[ERROR_FILE_PROCESSING] Failed to process uploaded file:', err);
     res.status(500).json({ error: 'Failed to process file' })
   }
 });
@@ -73,15 +81,19 @@ router.post('/query', (req, res, next) => {
           storeHelper.getResult(prompt).then(result => {
             res.status(200).json({ message: result.result });
           }).catch(err => {
+            console.log('[ERROR_GET_RESULT] Failed to get result for query:', query, 'File:', fileName, 'Error:', err);
             res.status(500).json({ error: err });
           })
         }).catch(err => {
+          console.log('[ERROR_GENERATE_PROMPT] Failed to generate prompt for query:', query, 'File:', fileName, 'Error:', err);
           res.status(500).json({ error: err });
         })
       }).catch(err => {
+        console.log('[ERROR_QUERY_DATA] Failed to query data for query:', query, 'File:', fileName, 'Error:', err);
         res.status(500).json({ error: err });
       })
     }).catch(err => {
+      console.log('[ERROR_EMBED_QUERY] Failed to embed query:', query, 'File:', fileName, 'Error:', err);
       res.status(500).json({ error: err });
     })
   })
