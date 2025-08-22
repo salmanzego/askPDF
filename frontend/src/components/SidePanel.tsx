@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { FiUploadCloud, FiFileText } from 'react-icons/fi'
+import { FiUploadCloud, FiFileText, FiX } from 'react-icons/fi'
 import { VscLoading } from "react-icons/vsc";
 
 interface SidePanelProps {
@@ -10,6 +10,7 @@ interface SidePanelProps {
     activeFileIndex: number | null
     setActiveFileIndex: (index: number | null) => void
     isUploading: boolean
+    onClose?: () => void
 }
 
 const SidePanel: React.FC<SidePanelProps> = ({
@@ -17,7 +18,8 @@ const SidePanel: React.FC<SidePanelProps> = ({
     onFileUpload,
     activeFileIndex,
     setActiveFileIndex,
-    isUploading
+    isUploading,
+    onClose
 }) => {
     const fileInputRef = React.useRef<HTMLInputElement | null>(null)
 
@@ -28,15 +30,33 @@ const SidePanel: React.FC<SidePanelProps> = ({
         }
     }
 
+    const handleFileSelect = (index: number) => {
+        setActiveFileIndex(index);
+        // Close sidebar on mobile after file selection
+        if (onClose) {
+            onClose();
+        }
+    };
+
     return (
-        <div className="w-1/5 border-r border-gray-300 bg-gray-50 h-full p-4 flex flex-col relative">
-            <div className="mb-6 text-2xl font-bold text-blue-600 text-center">
+        <div className="w-full border-r border-gray-300 bg-gray-50 h-full p-4 flex flex-col relative">
+            {/* Mobile Close Button */}
+            {onClose && (
+                <button
+                    onClick={onClose}
+                    className="lg:hidden absolute top-4 right-4 p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
+                >
+                    <FiX size={20} />
+                </button>
+            )}
+            
+            <div className="mb-6 text-2xl font-bold text-blue-600 text-center mt-8 lg:mt-0">
                 Ask<span className="text-gray-800">Pdf</span>
             </div>
             <div className="mb-4">
                 <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                     disabled={isUploading}
                 >
                     {isUploading ? (
@@ -70,8 +90,8 @@ const SidePanel: React.FC<SidePanelProps> = ({
                     {uploadedFiles.map((file, index) => (
                         <li
                             key={index}
-                            onClick={() => setActiveFileIndex(index)}
-                            className={`cursor-pointer flex items-center gap-2 p-2 rounded border 
+                            onClick={() => handleFileSelect(index)}
+                            className={`cursor-pointer flex items-center gap-2 p-2 rounded border transition-colors
                             ${activeFileIndex === index ? 'bg-blue-100 border-blue-500 text-blue-700' : 'bg-white hover:bg-gray-100'}`}
                         >
                             <FiFileText />
@@ -79,8 +99,11 @@ const SidePanel: React.FC<SidePanelProps> = ({
                         </li>
                     ))}
                     <button
-                        onClick={() => setActiveFileIndex(null)}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2 border text-gray-500 rounded hover:text-gray-700"
+                        onClick={() => {
+                            setActiveFileIndex(null);
+                            if (onClose) onClose();
+                        }}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2 border text-gray-500 rounded hover:text-gray-700 transition-colors"
                     >
                         Home
                     </button>
